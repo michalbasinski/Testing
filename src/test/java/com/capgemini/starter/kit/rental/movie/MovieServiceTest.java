@@ -3,17 +3,14 @@ package com.capgemini.starter.kit.rental.movie;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MovieServiceTest {
@@ -22,6 +19,9 @@ public class MovieServiceTest {
 
     @Mock
     private MovieRepository movieRepository;
+
+    @Captor
+    private ArgumentCaptor<Movie> movieCaptor;
 
     @Before
     public void setUp() {
@@ -41,5 +41,10 @@ public class MovieServiceTest {
 
         //then
         assertEquals(expectedMovie, result);
+
+        verify(movieRepository, times(1)).save(movieCaptor.capture());
+
+        assertEquals("Szeregowiec Ryan", movieCaptor.getValue().title);
+        assertNull(movieCaptor.getValue().id);
     }
 }
